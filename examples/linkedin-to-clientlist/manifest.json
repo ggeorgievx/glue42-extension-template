@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "Glue42 Extension Template Examples LinkedIn to ClientList",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.linkedin.com/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ]
+}

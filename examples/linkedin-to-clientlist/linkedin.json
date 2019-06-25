@@ -1,0 +1,21 @@
+[
+  {
+    "title": "LinkedIn",
+    "type": "window",
+    "name": "linkedin",
+    "icon": "https://cdn1.iconfinder.com/data/icons/logotypes/32/square-linkedin-512.png",
+    "details": {
+      "url": "https://linkedin.com",
+      "height": 640,
+      "width": 560,
+      "left": 100,
+      "top": 100,
+      "mode": "tab",
+      "title": "LinkedIn",
+      "injectionIntegration": true
+    },
+    "customProperties": {
+      "appManagerOrder": -1
+    }
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "title": "GlassDoor",
+    "type": "window",
+    "name": "glassdoor",
+    "icon": "http://www.freelogovectors.net/wp-content/uploads/2019/02/glassdoor-logo.png",
+    "details": {
+      "url": "https://glassdoor.com/blog",
+      "height": 640,
+      "width": 560,
+      "left": 100,
+      "top": 100,
+      "mode": "tab",
+      "title": "GlassDoor",
+      "injectionIntegration": true
+    },
+    "customProperties": {
+      "appManagerOrder": -1
+    }
+  }
+]

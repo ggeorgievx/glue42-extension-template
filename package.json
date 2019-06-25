@@ -1,0 +1,20 @@
+{
+  "name": "glue42-extension-template",
+  "version": "1.0.0",
+  "description": "Glue42 Extension Template",
+  "main": "content.js",
+  "scripts": {
+    "build": "node build-content.js"
+  },
+  "keywords": [
+    "Tick42",
+    "Glue42",
+    "extension",
+    "Electron"
+  ],
+  "author": "Tick42",
+  "license": "ISC",
+  "dependencies": {
+    "fs-assistant": "^0.2.3"
+  }
+}
