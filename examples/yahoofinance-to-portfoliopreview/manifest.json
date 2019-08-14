@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "Glue42 Extension Template Examples Yahoo Finance to Portfolio Preview",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://finance.yahoo.com/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ]
+}

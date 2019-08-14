@@ -1,0 +1,21 @@
+[
+  {
+    "title": "Yahoo Finance",
+    "type": "window",
+    "name": "yahoofinance",
+    "icon": "https://is2-ssl.mzstatic.com/image/thumb/Purple123/v4/b7/be/cc/b7becc7c-822e-3ffd-9858-ee856549dfc0/AppIcon-0-1x_U007emarketing-0-0-GLES2_U002c0-512MB-sRGB-0-0-0-85-220-0-0-0-7.png/246x0w.jpg",
+    "details": {
+      "url": "https://finance.yahoo.com",
+      "height": 640,
+      "width": 560,
+      "left": 100,
+      "top": 100,
+      "mode": "tab",
+      "title": "Yahoo Finance",
+      "injectionIntegration": true
+    },
+    "customProperties": {
+      "appManagerOrder": -1
+    }
+  }
+]

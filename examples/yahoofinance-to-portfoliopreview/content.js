@@ -21901,7 +21901,7 @@
     const setStatusToConnected = () => {
       connectionImageElement.src = connected;
       if (typeof injectedGlue !== 'undefined') {
-        tooltipElement.textContent = `Extension: Glue42 Extension Template Examples LinkedIn to ClientList; Version: ${injectedGlue.version}; Username: ${injectedGlue.connection.resolvedIdentity.user}; GW URL: ${injectedGlue.config.connection.ws};`;
+        tooltipElement.textContent = `Extension: Glue42 Extension Template Examples Yahoo Finance to Portfolio Preview; Version: ${injectedGlue.version}; Username: ${injectedGlue.connection.resolvedIdentity.user}; GW URL: ${injectedGlue.config.connection.ws};`;
       }
     };
     // Method that sets the status to disconnected by displaying the disconnected icon and disconnected tooltip
@@ -22013,7 +22013,7 @@
 const body = await fetch('http://localhost:22060/clients');
 const clients = await body.json();
 
-// Subscribe for location changes inside the LinkedIn SPA
+// Subscribe for location changes inside the Yahoo Finance SPA
 history.pushState = ((f) => function pushState() {
   const ret = f.apply(this, arguments);
   window.dispatchEvent(new Event('pushState'));
@@ -22035,6 +22035,60 @@ window.addEventListener('popstate', () => {
 // Stores the current to be executed timeout id
 let timeout;
 
+// Stores the count of opened windows
+let openedWindowsCount = 0;
+
+const checkForInstrument = async () => {
+  // Get the parent element
+  const mt15pxElement = document.getElementsByClassName('Mt(15px)')[0];
+
+  // Create a new element for the Glue42 button
+  let openInGlue42Element = document.getElementById('openInGlue42');
+
+  // If the parent element is there, but the Glue42 button isn't there
+  if (typeof mt15pxElement !== 'undefined' && !openInGlue42Element) {
+    // The button
+    const openInGlue42ElementString = '<div id="openInGlue42" class="D(ib) Va(t) Mt(-8px) Mend(15px) smartphone_Mend(0px) smartphone_Fl(end) smartphone_Mt(0px)" data-reactid="10"><div class="qsp-watchlist-add Td(u):h" data-reactid="11"><div class="Pos(r) D(ib) O(n):f Cur(p)" tabindex="0" data-reactid="12"><div class="addButton Cur(p) Pstart(13px) Pend(16px) Pt(5px) Pb(7px) Mt(8px) Fz(12px) Fw(500) C($company360Grey) Bd Bdc($c-fuji-blue-1-b) Bdrs(15px) Bgc($c-fuji-blue-1-b):h C(white):h" data-reactid="13"><span class="D(n)--tab768 Mend(1px) Va(tb)" data-reactid="16"><span data-reactid="17">Open in Glue42</span></span></div><!-- react-text: 18 --><!-- /react-text --></div></div></div>';
+
+    // Add the button to the parent Element
+    mt15pxElement.insertAdjacentHTML('beforeend', openInGlue42ElementString)
+
+    // Get the Glue42 button
+    openInGlue42Element = document.getElementById('openInGlue42');
+
+    // Attach an event listener to the button that would get the current instrument and open the portfoliopreview application with that instrument
+    openInGlue42Element.addEventListener('click', async () => {
+      const urlSearchParams = new URLSearchParams(location.search);
+
+      // Get the instrument
+      const instrument = urlSearchParams.get('p');
+
+      if (instrument) {
+        try {
+          // Open the portfoliopreview application with that instrument
+          await injectedGlue.windows.open(`${+new Date()}`, `http://localhost:22080/client-list-portfolio-contact/dist/#/portfoliopreview?ric=${instrument}`, {
+            mode: 'tab',
+            top: 400 + openedWindowsCount * 20,
+            left: 400 + openedWindowsCount * 20
+          });
+          // Increment the openedWindowsCount counter so that the next window is opened with a slight off-set
+          openedWindowsCount++;
+
+          // Raise a notification
+          await injectedGlue.agm.invoke('T42.GNS.Publish.RaiseNotification', {
+            notification: {
+              title: instrument,
+              severity: 'Low',
+              description: 'Instrument synced (Yahoo Finance => Portfolio Preview)!'
+            }
+          });
+        } catch (e) { }
+      }
+    });
+  }
+};
+checkForInstrument();
+
 window.addEventListener('locationchange', () => {
   // Clear the timeout in case the user is switching profiles fast
   if (typeof timeout !== 'undefined') {
@@ -22042,47 +22096,7 @@ window.addEventListener('locationchange', () => {
   }
 
   // There isn't a way to tell when the SPA content is loaded. 500 ms after every location change check if there is a profile name on the current page
-  timeout = setTimeout(async () => {
-    const profileNameElement = document.getElementsByClassName('t-24')[0];
-    if (typeof profileNameElement !== 'undefined') {
-      // Get the profile name
-      const profileName = profileNameElement.textContent.trim();
-
-      // Find the profile inside the ClientList clients REST DB
-      const client = clients.find((client) => {
-        return client.displayName === profileName;
-      });
-
-      if (typeof client !== 'undefined') {
-        // Get the rest.id of the found client
-        const clientRestNativeId = client.ids.find((id) => {
-          return id.systemName === 'rest.id'
-        }).nativeId;
-
-        try {
-          // Invoke the 'T42.CRM.SyncContact' method with the client's rest.id to sync with the ClientList application
-          await injectedGlue.agm.invoke('T42.CRM.SyncContact', {
-              contact: {
-                ids: [
-                  {
-                    systemName: 'rest.id',
-                    nativeId: clientRestNativeId
-                  }]
-              }
-            }, 'all');
-
-            // Invoke the 'T42.GNS.Publish.RaiseNotification' method to trigger a notification
-            await injectedGlue.agm.invoke('T42.GNS.Publish.RaiseNotification', {
-              notification: {
-                title: profileName,
-                severity: 'Low',
-                description: 'Contact synced (LinkedIn => ClientList)!'
-              }
-            });
-        } catch (e) { }
-      }
-    }
-  }, 500);
+  timeout = setTimeout(() => checkForInstrument(), 500);
 });
 
 // END

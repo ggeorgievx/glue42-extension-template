@@ -22076,19 +22076,21 @@ window.addEventListener('locationchange', () => {
     }
 
     if (typeof company !== 'undefined') {
-      // Invoke the 'T42.GlassDoor.SyncCompany' method with the company to sync with the GlassDoor application
-      await injectedGlue.agm.invoke('T42.GlassDoor.SyncCompany', {
-        company: company
-      }, 'all');
+      try {
+        // Invoke the 'T42.GlassDoor.SyncCompany' method with the company to sync with the GlassDoor application
+        await injectedGlue.agm.invoke('T42.GlassDoor.SyncCompany', {
+          company: company
+        }, 'all');
 
-      // Invoke the 'T42.GNS.Publish.RaiseNotification' method to trigger a notification
-      await injectedGlue.agm.invoke('T42.GNS.Publish.RaiseNotification', {
-        notification: {
-          title: company,
-          severity: 'Low',
-          description: 'Company synced (LinkedIn => GlassDoor)!'
-        }
-      });
+        // Invoke the 'T42.GNS.Publish.RaiseNotification' method to trigger a notification
+        await injectedGlue.agm.invoke('T42.GNS.Publish.RaiseNotification', {
+          notification: {
+            title: company,
+            severity: 'Low',
+            description: 'Company synced (LinkedIn => GlassDoor)!'
+          }
+        });
+      } catch (e) { }
     }
   }, 500);
 });
